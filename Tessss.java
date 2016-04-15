@@ -7,9 +7,9 @@ public class Tessss {
 		String t = "321.2";
 		
 		
-		double a = Double.parseDouble(s);
+		//double a = Double.;
 		double b = Double.parseDouble(t);
 		
-		System.out.println(a + b );
+		//System.out.println(a + b );
 	}
 }
