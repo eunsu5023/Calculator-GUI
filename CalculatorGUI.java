@@ -43,7 +43,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 	private JButton btn_del;
 	private JPanel p_south_innerP;
 	private JLabel lbl_signature;
-	private double resultDouble;
 
 	private double left;
 	private double right;
@@ -234,6 +233,8 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 				lbl_result.setText("9");
 			}else if(source == btn_0){
 				lbl_result.setText("0");
+			}else if(source == btn_dot){
+				lbl_result.setText("0.");
 			}
 		}else {										//처음이 0이 아니면
 			if(source == btn_1){
@@ -257,6 +258,10 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}else if(source == btn_0){
 				lbl_result.setText(lbl_result.getText() + "0");
 			}else if(source == btn_dot){
+				char[] arr =lbl_result.getText().toCharArray();
+				for(int i = 0; i < arr.length; i++){
+					if(arr[i] == '.')	return;
+				}//for
 				lbl_result.setText(lbl_result.getText() + ".");
 			}
 		}// 숫자 입력 끝
@@ -358,21 +363,20 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 		}
 		
 		
+		
 	}// actionPerformed()
 
 	
 	public void operation(String operator){
-		if(operator.equals("+")){
-			left += right;
-		}else if (operator.equals("-")){
-			left -= right;
-		}else if(operator.equals("*")){
-			left *= right;
-		}else if(operator.equals("/")){
-			left /= right;
-		}
-	}
+			if(operator.equals("+")){
+				left += right;
+			}else if (operator.equals("-")){
+				left -= right;
+			}else if(operator.equals("*")){
+				left *= right;
+			}else if(operator.equals("/")){
+				left /= right;
+			}
+	}//operation()
 	
-	
-	
-}
+}//class
