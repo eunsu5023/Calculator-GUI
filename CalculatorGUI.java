@@ -60,6 +60,8 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 	private double right;
 	private String operator;
 	private String check;
+	private boolean opSwitch = true;
+
 	private JMenuBar menuBar;
 	private JMenu me_file;
 	private JMenuItem mi_exit;
@@ -90,30 +92,30 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 386, 560);
-		
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				windowClose();
 			}
 		});
-		
-		
+
+
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		
-		me_file = new JMenu("File");
-		me_file.setMnemonic('F');
-		me_file.setMnemonic(KeyEvent.VK_F);
+
+		me_file = new JMenu("Menu");
+		me_file.setMnemonic('M');
+		me_file.setMnemonic(KeyEvent.VK_M);
 		menuBar.add(me_file);
-		
+
 		mi_exit = new JMenuItem("Exit");
 		mi_exit.addActionListener(this);
-		
+
 		mi_info = new JMenuItem("Info");
 		mi_info.addActionListener(this);
 		me_file.add(mi_info);
-		
+
 		separator = new JSeparator();
 		me_file.add(separator);
 		mi_exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
@@ -262,34 +264,54 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 		p_south.add(lbl_signature, BorderLayout.SOUTH);
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {		//마지막 숫자 입력 = true, 마지막 연산자 입력 = false;
 		Object source = e.getSource();
 		String cmdValue = e.getActionCommand();
 
 		if(cmdValue.equals("+") || cmdValue.equals("-") || cmdValue.equals("*") || cmdValue.equals("/")){		//사칙연산
 			check = "wow";
-			if(lbl_operation.getText().length() < 1){
-				left = Double.parseDouble(lbl_result.getText());
-				operator = cmdValue;
-				lbl_operation.setText(lbl_result.getText() + cmdValue);
-			}else {
-					lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + cmdValue);
-					right = Double.parseDouble(lbl_result.getText());
-					operation(operator);
+
+			if(opSwitch){
+				if(lbl_operation.getText().length() < 1){
+					left = Double.parseDouble(lbl_result.getText());
 					operator = cmdValue;
-					lbl_result.setText(Double.toString(left));
+					lbl_operation.setText(lbl_result.getText() + cmdValue);
+				}else {
+					try{
+						lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + cmdValue);
+						right = Double.parseDouble(lbl_result.getText());
+						operation(operator);
+						operator = cmdValue;
+						lbl_result.setText(Double.toString(left));
+					}catch (CanNotDivide cd){
+						lbl_result.setText(cd.getMessage());
+						lbl_operation.setText("");
+					}catch (NullExcept ne){
+					}
+				}
+			}else { //opSwitch if
+				lbl_operation.setText(lbl_operation.getText().substring(0, lbl_operation.getText().length()-1) + cmdValue);
+				operator = cmdValue;
 			}
+			opSwitch = false;
+
 		}else if (cmdValue.equals("C")){		//C버튼
 			lbl_operation.setText("");
 			lbl_result.setText("0");
 			operator = null;
 		}else if(cmdValue.equals("=")){
-			right = Double.parseDouble(lbl_result.getText());
-			lbl_operation.setText("");
-			operation(operator);
-			lbl_result.setText(Double.toString(left));
-			operator = null;
-			check = "wow";
+			try{
+				right = Double.parseDouble(lbl_result.getText());
+				lbl_operation.setText("");
+				operation(operator);
+				lbl_result.setText(Double.toString(left));
+				operator = null;
+				check = "wow";
+			}catch (CanNotDivide cd){
+				lbl_result.setText(cd.getMessage());
+				lbl_operation.setText("");
+			}catch (NullExcept ne){
+			}
 		}else if(cmdValue.equals("del")){
 			String a = lbl_result.getText();
 			if(a.length() == 1){
@@ -297,95 +319,69 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}else {
 				lbl_result.setText(a.substring(0, a.length()-1));
 			}
-		}
-		
+		}else if(cmdValue.equals("Info") || cmdValue.equals("Exit")){
+		}else{
+			opSwitch = true;
+			if(lbl_result.getText().equals("0") || check != null){		//처음이 0이거나 연산자 누른 다음 새로운 값 입력하는 순간. 번호가 새로 시작
+				if(source == btn_dot){									//첫 입력을 .으로 하면 0. 으로 시작하게 해야 함
+					lbl_result.setText("0.");
+				}else {
+					check = null;
+					lbl_result.setText(cmdValue);
+				}
 
-		if(lbl_result.getText().equals("0") || check != null){		//처음이 0이거나 화면에는 숫자가 있지만 연산자를 입력했기에 새로 시작해야 하는 경우
-			check = null;
-			if(source == btn_1){
-				lbl_result.setText("1");
-			}else if(source == btn_2){
-				lbl_result.setText("2");
-			}else if(source == btn_3){
-				lbl_result.setText("3");
-			}else if(source == btn_4){
-				lbl_result.setText("4");
-			}else if(source == btn_5){
-				lbl_result.setText("5");
-			}else if(source == btn_6){
-				lbl_result.setText("6");
-			}else if(source == btn_7){
-				lbl_result.setText("7");
-			}else if(source == btn_8){
-				lbl_result.setText("8");
-			}else if(source == btn_9){
-				lbl_result.setText("9");
-			}else if(source == btn_0){
-				lbl_result.setText("0");
-			}else if(source == btn_dot){
-				lbl_result.setText("0.");
+			}else if(check == null) {									//눌러지는 버튼값을 뒤에 붙이는 경우 
+				if(source == btn_dot){									// .입력할때 중복입력 방지
+					char[] arr =lbl_result.getText().toCharArray();
+					for(int i = 0; i < arr.length; i++){
+						if(arr[i] == '.')	return;
+					}//for
+					lbl_result.setText(lbl_result.getText() + ".");
+				}else {
+					lbl_result.setText(lbl_result.getText() + cmdValue);
+				}// .입력할때 중복입력 방지 
 			}
-		}else if(check == null){										//처음이 0이 아니거나 숫자를 입력중인 경우
-			if(source == btn_1){
-				lbl_result.setText(lbl_result.getText() + "1");
-			}else if(source == btn_2){
-				lbl_result.setText(lbl_result.getText() + "2");
-			}else if(source == btn_3){
-				lbl_result.setText(lbl_result.getText() + "3");
-			}else if(source == btn_4){
-				lbl_result.setText(lbl_result.getText() + "4");
-			}else if(source == btn_5){
-				lbl_result.setText(lbl_result.getText() + "5");
-			}else if(source == btn_6){
-				lbl_result.setText(lbl_result.getText() + "6");
-			}else if(source == btn_7){
-				lbl_result.setText(lbl_result.getText() + "7");
-			}else if(source == btn_8){
-				lbl_result.setText(lbl_result.getText() + "8");
-			}else if(source == btn_9){
-				lbl_result.setText(lbl_result.getText() + "9");
-			}else if(source == btn_0){
-				lbl_result.setText(lbl_result.getText() + "0");
-			}else if(source == btn_dot){
-				char[] arr =lbl_result.getText().toCharArray();
-				for(int i = 0; i < arr.length; i++){
-					if(arr[i] == '.')	return;
-				}//for
-				lbl_result.setText(lbl_result.getText() + ".");
-			}
-		}// 숫자 입력 끝
-		
-		
-		
-		
-		
-		
+		}
+
+
+
+
 		if(source == mi_exit){
 			windowClose();
 		}
-		
+
 		if(source == mi_info){
-			JOptionPane.showMessageDialog(this, String.format("만든 사람 : 김성훈%n만든 날짜 : 2016년 4월"), "Info", JOptionPane.PLAIN_MESSAGE);
+			JOptionPane.showMessageDialog(this, String.format("만든 사람 : 김성훈%n만든 날짜 : 2016년 4월 언젠가"), "Info", JOptionPane.PLAIN_MESSAGE);
 		}
-		
+
 	}// actionPerformed()
-	
+
 	public void windowClose(){
 		int s = JOptionPane.showConfirmDialog(this, "진심?", "설마 종료?", JOptionPane.OK_CANCEL_OPTION);
 		if(s == JOptionPane.OK_OPTION){
 			System.exit(0);
 		}
-	}
+	}//windowClose()
 
-	public void operation(String operator){
-		if(operator.equals("+")){
-			left += right;
-		}else if (operator.equals("-")){
-			left -= right;
-		}else if(operator.equals("*")){
-			left *= right;
-		}else if(operator.equals("/")){
-			left /= right;
+	public void operation(String operator) throws CanNotDivide, NullExcept{
+
+		if(Double.toString(right) != null && Double.toString(left) != null && operator != null){
+
+			if(operator.equals("+")){
+				left += right;
+			}else if (operator.equals("-")){
+				left -= right;
+			}else if(operator.equals("*")){
+				left *= right;
+			}else if(operator.equals("/")){
+				if(right == 0){
+					throw new CanNotDivide("0으로 나눌 수 없습니다.");
+				}else {
+					left /= right;
+				}
+			}
+		}else {
+			throw new NullExcept();
 		}
 	}//operation()
 
