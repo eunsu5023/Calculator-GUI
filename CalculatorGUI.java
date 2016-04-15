@@ -21,11 +21,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JSeparator;
 
 public class CalculatorGUI extends JFrame implements ActionListener {
 
@@ -264,7 +264,43 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if(lbl_result.getText().equals("0") || check != null){		//처음이 0이면
+		String cmdValue = e.getActionCommand();
+
+		if(cmdValue.equals("+") || cmdValue.equals("-") || cmdValue.equals("*") || cmdValue.equals("/")){		//사칙연산
+			check = "wow";
+			if(lbl_operation.getText().length() < 1){
+				left = Double.parseDouble(lbl_result.getText());
+				operator = cmdValue;
+				lbl_operation.setText(lbl_result.getText() + cmdValue);
+			}else {
+					lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + cmdValue);
+					right = Double.parseDouble(lbl_result.getText());
+					operation(operator);
+					operator = cmdValue;
+					lbl_result.setText(Double.toString(left));
+			}
+		}else if (cmdValue.equals("C")){		//C버튼
+			lbl_operation.setText("");
+			lbl_result.setText("0");
+			operator = null;
+		}else if(cmdValue.equals("=")){
+			right = Double.parseDouble(lbl_result.getText());
+			lbl_operation.setText("");
+			operation(operator);
+			lbl_result.setText(Double.toString(left));
+			operator = null;
+			check = "wow";
+		}else if(cmdValue.equals("del")){
+			String a = lbl_result.getText();
+			if(a.length() == 1){
+				lbl_result.setText("0");
+			}else {
+				lbl_result.setText(a.substring(0, a.length()-1));
+			}
+		}
+		
+
+		if(lbl_result.getText().equals("0") || check != null){		//처음이 0이거나 화면에는 숫자가 있지만 연산자를 입력했기에 새로 시작해야 하는 경우
 			check = null;
 			if(source == btn_1){
 				lbl_result.setText("1");
@@ -289,7 +325,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}else if(source == btn_dot){
 				lbl_result.setText("0.");
 			}
-		}else {										//처음이 0이 아니면
+		}else if(check == null){										//처음이 0이 아니거나 숫자를 입력중인 경우
 			if(source == btn_1){
 				lbl_result.setText(lbl_result.getText() + "1");
 			}else if(source == btn_2){
@@ -318,99 +354,8 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 				lbl_result.setText(lbl_result.getText() + ".");
 			}
 		}// 숫자 입력 끝
-
-		if(source == btn_del){
-			String a = lbl_result.getText();
-			if(a.length() == 1){
-				lbl_result.setText("0");
-			}else {
-				lbl_result.setText(a.substring(0, a.length()-1));
-			}
-		}//del버튼
-
-		if(source == btn_clear){
-			lbl_result.setText("0");
-		}//C버튼
-
-		if(source == btn_add){
-			if(lbl_operation.getText().length() < 1){
-				left = Double.parseDouble(lbl_result.getText());
-				operator = "+";
-				lbl_operation.setText(lbl_result.getText() + "+");
-			}else {
-					lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "+");
-					right = Double.parseDouble(lbl_result.getText());
-					operation(operator);
-					operator = "+";
-					lbl_result.setText(Double.toString(left));
-			}
-			check = "wow";
-		}// +버튼
-
-		if(source == btn_sub){
-			if(lbl_operation.getText().length() < 1){
-				left = Double.parseDouble(lbl_result.getText());
-				operator = "-";
-				lbl_operation.setText(lbl_result.getText() + "-");
-			}else {
-				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "-");
-				right = Double.parseDouble(lbl_result.getText());
-				operation(operator);
-				operator = "-";
-				lbl_result.setText(Double.toString(left));
-			}
-			check = "wow";
-		}// -버튼
-
-		if(source == btn_mul){
-			if(lbl_operation.getText().length() < 1){
-				left = Double.parseDouble(lbl_result.getText());
-				operator = "*";
-				lbl_operation.setText(lbl_result.getText() + "*");
-			}else {
-				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "*");
-				right = Double.parseDouble(lbl_result.getText());
-				operation(operator);
-				operator = "*";
-				lbl_result.setText(Double.toString(left));
-			}
-			check = "wow";
-		}// *버튼
-
-		/*
-		if(source == btn_sub){
-			if(lbl_operation.getText().length() < 1){
-				left = Double.parseDouble(lbl_result.getText());
-				operator = "-";
-				lbl_operation.setText(lbl_result.getText() + "-");
-			}else {
-				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "-");
-				right = Double.parseDouble(lbl_result.getText());
-
-				operation(operator);
-				operator = "-";
-				lbl_result.setText(Double.toString(left));
-			}
-			check = "wow";
-		}// 	/버튼
-		 */
-
-		if(source == btn_calc){
-			right = Double.parseDouble(lbl_result.getText());
-			lbl_operation.setText("");
-			operation(operator);
-			lbl_result.setText(Double.toString(left));
-			operator = null;
-			check = "wow";
-		}// =버튼
-
-		if(source == btn_clear){
-			lbl_operation.setText("");
-			lbl_result.setText("0");
-			operator = null;
-		}// C버튼 
 		
-
+		
 		
 		
 		
