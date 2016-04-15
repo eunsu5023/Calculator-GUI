@@ -37,6 +37,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 	private JButton btn_9;
 	private JButton btn_clear;
 	private JButton btn_calc;
+	private JLabel lbl_operation;
 	private JLabel lbl_result;
 	private JButton btn_0;
 	private JButton btn_dot;
@@ -47,10 +48,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 	private double left;
 	private double right;
 	private String operator;
-
 	private String check;
-	private JLabel lbl_operation;
-
 	/**
 	 * Launch the application.
 	 */
@@ -210,7 +208,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		
 		if(lbl_result.getText().equals("0") || check != null){		//처음이 0이면
 			check = null;
 			if(source == btn_1){
@@ -238,7 +235,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}
 		}else {										//처음이 0이 아니면
 			if(source == btn_1){
-			lbl_result.setText(lbl_result.getText() + "1");
+				lbl_result.setText(lbl_result.getText() + "1");
 			}else if(source == btn_2){
 				lbl_result.setText(lbl_result.getText() + "2");
 			}else if(source == btn_3){
@@ -265,8 +262,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 				lbl_result.setText(lbl_result.getText() + ".");
 			}
 		}// 숫자 입력 끝
-		
-		
+
 		if(source == btn_del){
 			String a = lbl_result.getText();
 			if(a.length() == 1){
@@ -275,27 +271,26 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 				lbl_result.setText(a.substring(0, a.length()-1));
 			}
 		}//del버튼
-		
+
 		if(source == btn_clear){
 			lbl_result.setText("0");
 		}//C버튼
-		
+
 		if(source == btn_add){
 			if(lbl_operation.getText().length() < 1){
 				left = Double.parseDouble(lbl_result.getText());
 				operator = "+";
 				lbl_operation.setText(lbl_result.getText() + "+");
 			}else {
-				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "+");
-				right = Double.parseDouble(lbl_result.getText());
-				
-				operation(operator);
-				operator = "+";
-				lbl_result.setText(Double.toString(left));
+					lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "+");
+					right = Double.parseDouble(lbl_result.getText());
+					operation(operator);
+					operator = "+";
+					lbl_result.setText(Double.toString(left));
 			}
 			check = "wow";
 		}// +버튼
-		
+
 		if(source == btn_sub){
 			if(lbl_operation.getText().length() < 1){
 				left = Double.parseDouble(lbl_result.getText());
@@ -304,14 +299,13 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}else {
 				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "-");
 				right = Double.parseDouble(lbl_result.getText());
-				
 				operation(operator);
 				operator = "-";
 				lbl_result.setText(Double.toString(left));
 			}
 			check = "wow";
 		}// -버튼
-		
+
 		if(source == btn_mul){
 			if(lbl_operation.getText().length() < 1){
 				left = Double.parseDouble(lbl_result.getText());
@@ -320,7 +314,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}else {
 				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "*");
 				right = Double.parseDouble(lbl_result.getText());
-				
 				operation(operator);
 				operator = "*";
 				lbl_result.setText(Double.toString(left));
@@ -328,7 +321,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			check = "wow";
 		}// *버튼
 
-		
 		/*
 		if(source == btn_sub){
 			if(lbl_operation.getText().length() < 1){
@@ -338,15 +330,15 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}else {
 				lbl_operation.setText(lbl_operation.getText() +lbl_result.getText() + "-");
 				right = Double.parseDouble(lbl_result.getText());
-				
+
 				operation(operator);
 				operator = "-";
 				lbl_result.setText(Double.toString(left));
 			}
 			check = "wow";
 		}// 	/버튼
-		*/
-		
+		 */
+
 		if(source == btn_calc){
 			right = Double.parseDouble(lbl_result.getText());
 			lbl_operation.setText("");
@@ -354,29 +346,28 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			lbl_result.setText(Double.toString(left));
 			operator = null;
 			check = "wow";
-		}
-		
+		}// =버튼
+
 		if(source == btn_clear){
 			lbl_operation.setText("");
 			lbl_result.setText("0");
 			operator = null;
-		}
-		
-		
-		
+		}// C버튼 
+
+
+
 	}// actionPerformed()
 
-	
 	public void operation(String operator){
-			if(operator.equals("+")){
-				left += right;
-			}else if (operator.equals("-")){
-				left -= right;
-			}else if(operator.equals("*")){
-				left *= right;
-			}else if(operator.equals("/")){
-				left /= right;
-			}
+		if(operator.equals("+")){
+			left += right;
+		}else if (operator.equals("-")){
+			left -= right;
+		}else if(operator.equals("*")){
+			left *= right;
+		}else if(operator.equals("/")){
+			left /= right;
+		}
 	}//operation()
-	
+
 }//class
