@@ -338,7 +338,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 					}//for
 					lbl_result.setText(lbl_result.getText() + ".");
 				}else {
-					lbl_result.setText(lbl_result.getText() + cmdValue);
+				lbl_result.setText(lbl_result.getText() + cmdValue);
 				}// .입력할때 중복입력 방지 
 			}
 		}
