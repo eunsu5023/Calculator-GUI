@@ -9,9 +9,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,7 +29,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.xml.ws.soap.MTOM;
 
+@SuppressWarnings("serial")
 public class CalculatorGUI extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
@@ -88,7 +93,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 	 */
 	public CalculatorGUI() {
 
-		setTitle("\uAE40\uC131\uD6C8 \uACC4\uC0B0\uAE30");
+		setTitle("\uBBFC\uD558\uC740 \uACC4\uC0B0\uAE30");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 386, 560);
@@ -259,10 +264,13 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 		btn_calc.setFont(new Font("Bookman Old Style", Font.PLAIN, 25));
 		p_south_innerP.add(btn_calc);
 
-		lbl_signature = new JLabel("\uAE40\uC131\uD6C8 \uACC4\uC0B0\uAE30\u314E\u314E");
+		lbl_signature = new JLabel("\uD6C4\uB2C8\uD558\uB2C8");
 		lbl_signature.setHorizontalAlignment(SwingConstants.CENTER);
 		p_south.add(lbl_signature, BorderLayout.SOUTH);
-	}
+		
+		
+		
+	}//생성자
 
 	public void actionPerformed(ActionEvent e) {		//마지막 숫자 입력 = true, 마지막 연산자 입력 = false;
 		Object source = e.getSource();
@@ -343,9 +351,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 			}
 		}
 
-
-
-
 		if(source == mi_exit){
 			windowClose();
 		}
@@ -355,6 +360,9 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 		}
 
 	}// actionPerformed()
+	
+	
+	
 
 	public void windowClose(){
 		int s = JOptionPane.showConfirmDialog(this, "진심?", "설마 종료?", JOptionPane.OK_CANCEL_OPTION);
